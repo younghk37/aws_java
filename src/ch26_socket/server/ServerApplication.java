@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class ServerApplication {
 	public static ServerSocket serverSocket;
-	public static int port = 0;
+	public static int port;
 	
 	public static void main(String[] args) {
 		
@@ -26,7 +26,7 @@ public class ServerApplication {
 			System.out.print("선택: ");
 			
 			try {
-			selectedMenu = scanner.nextInt();
+				selectedMenu = scanner.nextInt();
 			} catch (InputMismatchException e) {
 				System.out.println("숫자만 입력 가능합니다.");
 				continue;
@@ -53,13 +53,20 @@ public class ServerApplication {
 							
 							while(!Thread.interrupted()) {
 								Socket socket = serverSocket.accept();
+								ConnectedSocket connectedSocket = new ConnectedSocket(socket);
+								connectedSocket.start();			
+								
+								ConnectedClientController.getInstance()
+									.getConnectedSockets().add(connectedSocket);
+								
 								System.out.println("접속!!");
+								System.out.println(socket.getInetAddress().getHostAddress());
+								
 								try {
 									serverSocket.close();
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
-								System.out.println(socket.getInetAddress().getHostAddress());
 							}
 							
 						} catch(BindException e) {

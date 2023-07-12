@@ -34,9 +34,15 @@ public class ClientReceiver extends Thread {
 		String resource = gson.fromJson(requestBody, RequestBodyDto.class).getResource();
 		
 		switch(resource) {
+			case "updateRoomList":
+				List<String> roomList = (List<String>) gson.fromJson(requestBody, RequestBodyDto.class).getBody();
+				SimpleGUIClient.getInstance().getRoomListModel().clear();
+				SimpleGUIClient.getInstance().getRoomListModel().addAll(roomList);
+				break;
+				
 			case "showMessage":
 				String messageContent = (String) gson.fromJson(requestBody, RequestBodyDto.class).getBody();// 이 경우 T타입을 String으로 바로 변환 가능 -> String은 리터럴이라 된다?
-				SimpleGUIClient.getInstance().getTextArea().append(messageContent + "\n");
+				SimpleGUIClient.getInstance().getChattingTextArea().append(messageContent + "\n");
 				break;
 				
 			case "updateUserList":
